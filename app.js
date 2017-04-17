@@ -29,6 +29,8 @@ let score = 0;
 let scoreText;
 let music;
 let pauseButton;
+let tie_fighterSpace = 1000;
+let destroyerLaunched = false;
 
 let AccelerationX = 600;
 let AccelerationY = 300;
@@ -51,7 +53,7 @@ function create() {
     starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
     music = game.add.audio('mainTheme');
-    music.play()
+    music.play();
 
 
     bullets = game.add.group();
@@ -115,8 +117,6 @@ function create() {
         enemy.damage = 30;
     });
 
-    game.time.events.add(1000, launchDestroyer);
-
 
     player = game.add.sprite(400, 540, 'ship');
     player.health = 100;
@@ -167,6 +167,22 @@ function update() {
     }
     else if (cursors.down.isDown) {
         player.body.acceleration.y = AccelerationY;
+    }
+    if (cursors.left.isDown && cursors.up.isDown){
+        player.body.acceleration.x = -Math.sqrt(Math.pow(AccelerationX,2)/2);
+        player.body.acceleration.y = -Math.sqrt(Math.pow(AccelerationY,2)/2);
+    }
+    else if (cursors.right.isDown && cursors.up.isDown){
+        player.body.acceleration.x = Math.sqrt(Math.pow(AccelerationX,2)/2);
+        player.body.acceleration.y = -Math.sqrt(Math.pow(AccelerationY,2)/2);
+    }
+    else if (cursors.left.isDown && cursors.down.isDown){
+        player.body.acceleration.x = -Math.sqrt(Math.pow(AccelerationX,2)/2);
+        player.body.acceleration.y = Math.sqrt(Math.pow(AccelerationY,2)/2);
+    }
+    else if (cursors.right.isDown && cursors.down.isDown){
+        player.body.acceleration.x = Math.sqrt(Math.pow(AccelerationX,2)/2);
+        player.body.acceleration.y = Math.sqrt(Math.pow(AccelerationY,2)/2);
     }
 
 
@@ -223,8 +239,6 @@ function render() {
 }
 
 function launchTieFighter() {
-    let Min_Enemy_Spacing = 300;
-    let Max_Enemy_Spacing = 3000;
     let Enemy_Speed = 300;
 
     let enemy = tie_fighters.getFirstExists(false);
@@ -235,7 +249,7 @@ function launchTieFighter() {
         enemy.body.drag.x = 100;
     }
 
-    tie_fighterLaunchTime = game.time.events.add(game.rnd.integerInRange(Min_Enemy_Spacing, Max_Enemy_Spacing), launchTieFighter);
+    tie_fighterLaunchTime = game.time.events.add(game.rnd.integerInRange(tie_fighterSpace, tie_fighterSpace + 1000), launchTieFighter);
 }
 
 function launchDestroyer(){
@@ -245,7 +259,7 @@ function launchDestroyer(){
     let frequency = 80;
     let verticalSpacing = 90;
     let numberEnemiesInWave = 4;
-    let timeBetween = 5000;
+    let timeBetween = 2500;
 
     for(let i = 0; i < numberEnemiesInWave; i++){
         let enemy = destroyer.getFirstExists(false);
@@ -282,7 +296,7 @@ function launchDestroyer(){
     }
 
 
-    destroyerLaunchTime = game.time.events.add(timeBetween, launchDestroyer);
+    destroyerLaunchTime = game.time.events.add(game.rnd.integerInRange(timeBetween,timeBetween + 4000), launchDestroyer);
 }
 
 function fireBullet() {
@@ -313,6 +327,14 @@ function damageEnemy(enemy, bullet) {
     bullet.kill();
     score += enemy.damage * 5;
     scoreText.render();
+
+    tie_fighterSpace *= 0.9;
+
+    if(!destroyerLaunched && score > 800){
+        destroyerLaunched = true;
+        launchDestroyer();
+        tie_fighterSpace *= 2;
+    }
 }
 function enemyHits(player, bullet) {
     bullet.kill();
@@ -335,6 +357,9 @@ function restart(){
     scoreText.render();
     gameOver.visible = false;
     restartText.visible = false;
+
+    tie_fighterSpace = 1000;
+    destroyerLaunched = false;
 }
 
 function changeVolume(pointer) {
