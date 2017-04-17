@@ -1,0 +1,21 @@
+.container{
+    text-align: center;
+}
+.spacer30{
+    padding-top: 30px;
+}
+.spacer150{
+    padding-top: 150px;
+}
+.row-game{
+    text-align: center;
+}
+#game{
+    padding-left: 70px;
+}
+body{
+    background: url("./resForGame/back.jpg");
+}
+.navigation{
+    color: #FFD700;
+}
