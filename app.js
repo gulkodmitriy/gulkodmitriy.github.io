@@ -27,6 +27,7 @@ let tie_fighterLaunchTime;
 let destroyerLaunchTime;
 let score = 0;
 let scoreText;
+let music;
 
 let AccelerationX = 600;
 let AccelerationY = 300;
@@ -42,10 +43,14 @@ function preload() {
     game.load.image('destroyer', './resForGame/destroyer.png');
     game.load.bitmapFont('swfont','./resForGame/font.png','./resForGame/font.fnt')
     game.load.image('destroyerEnemyBullet', './resForGame/bulletEvil1.png');
+    game.load.audio('mainTheme', './resForGame/mainTheme.mp3');
 }
 
 function create() {
     starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+
+    music = game.add.audio('mainTheme');
+    music.play()
 
 
     bullets = game.add.group();
@@ -211,7 +216,7 @@ function update() {
 }
 
 function render() {
-
+    game.debug.soundInfo(music, 20, 32);
 }
 
 function launchTieFighter() {
@@ -327,4 +332,21 @@ function restart(){
     scoreText.render();
     gameOver.visible = false;
     restartText.visible = false;
+}
+
+function changeVolume(pointer) {
+
+    if (pointer.y < 100)
+    {
+        music.mute = false;
+    }
+    else if (pointer.y < 300)
+    {
+        music.volume += 0.1;
+    }
+    else
+    {
+        music.volume -= 0.1;
+    }
+
 }
