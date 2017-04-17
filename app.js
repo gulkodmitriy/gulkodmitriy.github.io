@@ -28,6 +28,7 @@ let destroyerLaunchTime;
 let score = 0;
 let scoreText;
 let music;
+let pauseButton;
 
 let AccelerationX = 600;
 let AccelerationY = 300;
@@ -128,6 +129,7 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    pauseButton = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 
     health = game.add.bitmapText(game.world.width - 175, 10, 'swfont', '' + player.health, 25);
     health.render = function () {
@@ -166,6 +168,7 @@ function update() {
     else if (cursors.down.isDown) {
         player.body.acceleration.y = AccelerationY;
     }
+
 
     bank = player.body.velocity.x / MaxSpeed;
     player.scale.x = 1 - Math.abs(bank) / 2;
